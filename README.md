@@ -55,11 +55,11 @@ let g:loaded_outdate = 1
 
 ## Installation
 
-Clone this repo into your `packpath`’s start folder or if use a plugin manager like `vim-plug`, the
-following should work fine.
+Clone this repo into your `packpath`’s start folder or if you use a plugin manager like `vim-plug`,
+the following should work fine.
 
 ```vim
-Plug sharat87/outdate.vim
+Plug 'sharat87/outdate.vim'
 ```
 
 ## TODO
