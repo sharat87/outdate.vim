@@ -1,4 +1,5 @@
 import re
+import sys
 import datetime
 from typing import List, Optional
 
@@ -30,21 +31,28 @@ FORMAT_PATTERNS = {
 }
 
 
-def outdate_apply(to_fmt):
+def outdate_apply(to_fmt, line1, line2, range_arg):
     # Importing locally so that the module can be tested without vim.
     import vim
 
-    final_line = reformat_date(
-        vim.current.line,
+    range_arg = int(range_arg, 10)
+    if range_arg not in {0, 2}:
+        print('Unknown range argument %d.' % range_arg, file=sys.stderr)
+        return
+
+    line1, line2 = int(line1, 10) - 1, int(line2, 10)
+    has_selection = range_arg == 2
+    vmode = vim.eval('visualmode()')
+
+    final_lines = reformat_date(
+        vim.current.buffer[line1:line2],
         vim.current.window.cursor[1],
         vim.eval('g:outdate_parse_formats'),
         to_fmt,
     )
 
-    if final_line is None:
-        vim.command("echomsg 'No match'")
-    elif vim.current.line != final_line:
-        vim.current.line = final_line
+    if vim.current.buffer[line1:line2] != final_lines:
+        vim.current.buffer[line1:line2] = final_lines
 
 
 def to_re(fmt):
@@ -53,15 +61,19 @@ def to_re(fmt):
     return re.compile(fmt, re.IGNORECASE | re.VERBOSE)
 
 
-def reformat_date(line, position, parse_formats, to_fmt):
-    dt, match = find_date(line, position, parse_formats)
+def reformat_date(in_lines, position, parse_formats, to_fmt):
+    out_lines = []
+    for line in in_lines:
+        dt, match = find_date(line, position, parse_formats)
 
-    if dt and match:
-        start, end = match.span()
-        return line[:start] + dt.strftime(to_fmt) + line[end:]
+        if dt and match:
+            start, end = match.span()
+            out_lines.append(line[:start] + dt.strftime(to_fmt) + line[end:])
 
-    else:
-        return None
+        else:
+            out_lines.append(line)
+
+    return out_lines
 
 
 def build_datetime(*, year=None, year_short=None,

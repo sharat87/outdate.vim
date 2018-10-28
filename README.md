@@ -9,19 +9,19 @@ vim-repeat plugin is installed, but this is optional.
 
 ## Default maps
 
-| Key sequence | To format   |
-| ------------ | ----------- |
-| `cdo`        | 31-Dec-2018 |
-| `cda`        | 12/31/2018  |
-| `cdi`        | 2018-12-31  |
-| `cdn`        | 20181231    |
+| Normal mode | Visual mode | To format   |
+| ----------- | ----------- | ----------- |
+| `cdo`       | `do`        | 31-Dec-2018 |
+| `cda`       | `da`        | 12/31/2018  |
+| `cdi`       | `di`        | 2018-12-31  |
+| `cdn`       | `dn`        | 20181231    |
 
 ## Add custom format mappings
 
 Mappings to convert to custom formats may be defined by running something like the following:
 
 ```vim
-nnoremap <silent> cdo :call Outdate('%d-%b-%Y')<CR>
+OutdateMap %d-%b-%Y cdo do
 ```
 
 The format strings to be passed to the `Outdate` function are Python `strftime` format patterns. More

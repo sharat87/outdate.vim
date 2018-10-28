@@ -16,15 +16,23 @@ if !exists('g:outdate_parse_formats')
         \ ]
 endif
 
-fun! Outdate(to_fmt) abort
+command! -nargs=1 -range Outdate call <SID>Outdate(<f-args>, <line1>, <line2>, <range>)
+fun! s:Outdate(...) abort
   py3 import vim, outdate
-  py3 outdate.outdate_apply(vim.eval('a:to_fmt'))
-  silent! call repeat#set(":call Outdate('" . a:to_fmt . "')\<CR>", v:count)
+  py3 import importlib; importlib.reload(outdate)
+  py3 outdate.outdate_apply(*vim.eval('a:000'))
+  silent! call repeat#set(":call Outdate('" . a:1 . "')\<CR>", v:count)
+endfun
+
+command! -nargs=+ OutdateMap call <SID>OutdateMap(<f-args>)
+fun! s:OutdateMap(to_fmt, n_map, v_map) abort
+  exe 'nnoremap ' . a:n_map . ' :Outdate ' . a:to_fmt . '<CR>'
+  exe 'vnoremap ' . a:v_map . ' :Outdate ' . a:to_fmt . '<CR>'
 endfun
 
 if !get(g:, 'outdate_no_default_maps', 0)
-  nnoremap <silent> cdo :call Outdate('%d-%b-%Y')<CR>
-  nnoremap <silent> cda :call Outdate('%m/%d/%Y')<CR>
-  nnoremap <silent> cdi :call Outdate('%Y-%m-%d')<CR>
-  nnoremap <silent> cdn :call Outdate('%Y%m%d')<CR>
+  OutdateMap %d-%b-%Y cdo do
+  OutdateMap %m/%d/%Y cda da
+  OutdateMap %Y-%m-%d cdi di
+  OutdateMap %Y%m%d   cdn dn
 endif
