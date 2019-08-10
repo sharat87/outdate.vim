@@ -31,9 +31,8 @@ FORMAT_PATTERNS = {
 }
 
 
-def outdate_apply(to_fmt, line1, line2, range_arg):
-    # Importing locally so that the module can be tested without vim.
-    import vim
+def apply(to_fmt, line1, line2, range_arg):
+    import vim  # Importing locally so that the module can be tested without vim.
 
     range_arg = int(range_arg, 10)
     if range_arg not in {0, 2}:
@@ -114,7 +113,7 @@ def find_date(line: str, position: int, formats: List[str]):
                 dt = datetime.datetime.strptime(match.group(), fmt)
             except ValueError:
                 try:
-                    dt = build_date(**match.groupdict())
+                    dt = build_datetime(**match.groupdict())
                 except ValueError:
                     # Matched string is not a valid date. No match!
                     match = None

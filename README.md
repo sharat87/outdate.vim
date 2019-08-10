@@ -65,9 +65,7 @@ Plug 'sharat87/outdate.vim'
 ## TODO
 
 - [ ] Vim style documentation.
-- [ ] Finish support for times (not just dates).
-- [ ] Visual mode.
-- [ ] Tests for more formats.
+- [ ] Support times (not just dates).
 
 ## Support
 
